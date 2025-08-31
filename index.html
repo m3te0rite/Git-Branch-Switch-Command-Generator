@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Git Branch Command Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    .output {
+      margin-top: 2rem;
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .command-block {
+      margin-top: 1rem;
+    }
+    .command-label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .command {
+      font-family: monospace;
+      background-color: #eee;
+      padding: 0.75rem;
+      border-radius: 3px;
+      white-space: pre-wrap;
+      margin-bottom: 0.5rem;
+    }
+    .copy-btn {
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-bottom: 0.3rem;
+    }
+    .copy-btn:hover {
+      background-color: #005a9e;
+    }
+    .copied-msg {
+      color: green;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Git Branch Command Generator</h1>
+  <input type="text" id="branchInput" placeholder="Enter branch name..." />
+  <button onclick="generateCommands()">Generate Commands</button>
+
+  <div class="output" id="outputArea" style="display:none;">
+    <div class="command-block">
+      <div class="command-label">If branch exists locally:</div>
+      <button class="copy-btn" onclick="copyCommand('localCommand', 'localCopied')">Copy</button>
+      <div class="command" id="localCommand"></div>
+      <div class="copied-msg" id="localCopied" style="display:none;">Copied!</div>
+    </div>
+
+    <div class="command-block">
+      <div class="command-label">If branch does NOT exist locally:</div>
+      <button class="copy-btn" onclick="copyCommand('remoteCommand', 'remoteCopied')">Copy</button>
+      <div class="command" id="remoteCommand"></div>
+      <div class="copied-msg" id="remoteCopied" style="display:none;">Copied!</div>
+    </div>
+  </div>
+
+  <script>
+    function generateCommands() {
+      const branchName = document.getElementById('branchInput').value.trim();
+      if (!branchName) return;
+
+      const localCmd = `git checkout ${branchName}`;
+      const remoteCmd = `git fetch origin "${branchName}"\ngit checkout -b "${branchName}" "origin/${branchName}"`;
+
+      document.getElementById('localCommand').textContent = localCmd;
+      document.getElementById('remoteCommand').textContent = remoteCmd;
+      document.getElementById('outputArea').style.display = 'block';
+
+      document.getElementById('localCopied').style.display = 'none';
+      document.getElementById('remoteCopied').style.display = 'none';
+    }
+
+    function copyCommand(commandId, msgId) {
+      const commandText = document.getElementById(commandId).textContent;
+      navigator.clipboard.writeText(commandText).then(() => {
+        const msg = document.getElementById(msgId);
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 1500);
+      });
+    }
+  </script>
+</body>
+</html>

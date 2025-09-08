@@ -27,6 +27,16 @@
       min-height: 100vh;
     }
 
+    body{
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
     .container {
       max-width: 700px;
       margin: 60px auto;
@@ -117,9 +127,33 @@
       font-size: 0.85rem;
       margin-top: 0.3rem;
     }
+    .branding {
+      font-size: 3rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      background-color: white;
+      color: #000000;
+    }
+
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      color: #444;
+      font-size: 0.9rem;
+    }
+
+    
   </style>
 </head>
 <body>
+
+
+
+  <div class="branding">XTECH</div>
+
+
   <div class="container">
     <h1>Git Command Toolkit</h1>
 
@@ -171,7 +205,14 @@
     </div>
   </div>
 
+  <div class="footer">&copy; <span id="current-year"></span> xtech. All rights reserved.</div>
+
+
   <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+
+
     function generateBranchCommands() {
       const branchName = document.getElementById('branchInput').value.trim();
       if (!branchName) return;

@@ -3,105 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Git Branch Command Generator</title>
+  <title>Git Command Toolkit</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
-      padding: 2rem;
+    :root {
+      --bg: #111;
+      --fg: #fff;
+      --accent: #fff;
+      --border: #333;
+      --font: 'Segoe UI', 'Arial', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+
+    .container {
       max-width: 700px;
-      margin: auto;
+      margin: 60px auto;
+      padding: 32px;
+      background: #181818;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 16px #0008;
     }
+
     h1 {
+      font-size: 2rem;
+      margin-bottom: 24px;
+      color: var(--accent);
       text-align: center;
-      color: #333;
     }
+
     input[type="text"] {
       width: 100%;
       padding: 0.75rem;
       margin-top: 1rem;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #222;
+      color: var(--fg);
     }
+
     button {
       margin-top: 1rem;
       padding: 0.75rem 1.5rem;
       font-size: 1rem;
-      background-color: #0078D4;
-      color: white;
+      background: var(--accent);
+      color: var(--bg);
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
     }
+
     button:hover {
-      background-color: #005a9e;
+      background: #ccc;
+      color: #000;
     }
+
     .output {
       margin-top: 2rem;
-      background-color: #fff;
-      padding: 1rem;
-      border-radius: 5px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
+
     .command-block {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
+
     .command-label {
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
+
     .command {
       font-family: monospace;
-      background-color: #eee;
+      background-color: #222;
       padding: 0.75rem;
-      border-radius: 3px;
+      border-radius: 6px;
       white-space: pre-wrap;
       margin-bottom: 0.5rem;
+      border: 1px solid var(--border);
     }
+
     .copy-btn {
-      background-color: #0078D4;
-      color: white;
+      background: var(--accent);
+      color: var(--bg);
       border: none;
       padding: 0.4rem 0.8rem;
       font-size: 0.9rem;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
       margin-bottom: 0.3rem;
     }
+
     .copy-btn:hover {
-      background-color: #005a9e;
+      background: #ccc;
+      color: #000;
     }
+
     .copied-msg {
-      color: green;
+      color: lightgreen;
       font-size: 0.85rem;
       margin-top: 0.3rem;
     }
   </style>
 </head>
 <body>
-  <h1>Git Branch Command Generator</h1>
-  <input type="text" id="branchInput" placeholder="Enter branch name..." />
-  <button onclick="generateCommands()">Generate Commands</button>
+  <div class="container">
+    <h1>Git Command Toolkit</h1>
 
-  <div class="output" id="outputArea" style="display:none;">
-    <div class="command-block">
-      <div class="command-label">If branch exists locally:</div>
-      <button class="copy-btn" onclick="copyCommand('localCommand', 'localCopied')">Copy</button>
-      <div class="command" id="localCommand"></div>
-      <div class="copied-msg" id="localCopied" style="display:none;">Copied!</div>
+    <!-- Branch Tool -->
+    <input type="text" id="branchInput" placeholder="Enter branch name..." />
+    <button onclick="generateBranchCommands()">Generate Branch Commands</button>
+
+    <div class="output" id="branchOutput" style="display:none;">
+      <div class="command-block">
+        <div class="command-label">If branch exists locally:</div>
+        <button class="copy-btn" onclick="copyCommand('localCommand', 'localCopied')">Copy</button>
+        <div class="command" id="localCommand"></div>
+        <div class="copied-msg" id="localCopied" style="display:none;">Copied!</div>
+      </div>
+
+      <div class="command-block">
+        <div class="command-label">If branch does NOT exist locally:</div>
+        <button class="copy-btn" onclick="copyCommand('remoteCommand', 'remoteCopied')">Copy</button>
+        <div class="command" id="remoteCommand"></div>
+        <div class="copied-msg" id="remoteCopied" style="display:none;">Copied!</div>
+      </div>
     </div>
 
-    <div class="command-block">
-      <div class="command-label">If branch does NOT exist locally:</div>
-      <button class="copy-btn" onclick="copyCommand('remoteCommand', 'remoteCopied')">Copy</button>
-      <div class="command" id="remoteCommand"></div>
-      <div class="copied-msg" id="remoteCopied" style="display:none;">Copied!</div>
+    <!-- Commit Tool -->
+    <input type="text" id="commitInput" placeholder="Enter commit ID..." />
+    <button onclick="generateCommitCommands()">Generate Revert Commands</button>
+
+    <div class="output" id="commitOutput" style="display:none;">
+      <div class="command-block">
+        <div class="command-label">Soft reset (HEAD only):</div>
+        <button class="copy-btn" onclick="copyCommand('softCommand', 'softCopied')">Copy</button>
+        <div class="command" id="softCommand"></div>
+        <div class="copied-msg" id="softCopied" style="display:none;">Copied!</div>
+      </div>
+
+      <div class="command-block">
+        <div class="command-label">Mixed reset (local changes kept):</div>
+        <button class="copy-btn" onclick="copyCommand('mixedCommand', 'mixedCopied')">Copy</button>
+        <div class="command" id="mixedCommand"></div>
+        <div class="copied-msg" id="mixedCopied" style="display:none;">Copied!</div>
+      </div>
+
+      <div class="command-block">
+        <div class="command-label">Hard reset (everything to commit):</div>
+        <button class="copy-btn" onclick="copyCommand('hardCommand', 'hardCopied')">Copy</button>
+        <div class="command" id="hardCommand"></div>
+        <div class="copied-msg" id="hardCopied" style="display:none;">Copied!</div>
+      </div>
     </div>
   </div>
 
   <script>
-    function generateCommands() {
+    function generateBranchCommands() {
       const branchName = document.getElementById('branchInput').value.trim();
       if (!branchName) return;
 
@@ -110,10 +181,28 @@
 
       document.getElementById('localCommand').textContent = localCmd;
       document.getElementById('remoteCommand').textContent = remoteCmd;
-      document.getElementById('outputArea').style.display = 'block';
+      document.getElementById('branchOutput').style.display = 'block';
 
       document.getElementById('localCopied').style.display = 'none';
       document.getElementById('remoteCopied').style.display = 'none';
+    }
+
+    function generateCommitCommands() {
+      const commitId = document.getElementById('commitInput').value.trim();
+      if (!commitId) return;
+
+      const soft = `git reset --soft ${commitId}`;
+      const mixed = `git reset --mixed ${commitId}`;
+      const hard = `git reset --hard ${commitId}`;
+
+      document.getElementById('softCommand').textContent = soft;
+      document.getElementById('mixedCommand').textContent = mixed;
+      document.getElementById('hardCommand').textContent = hard;
+      document.getElementById('commitOutput').style.display = 'block';
+
+      document.getElementById('softCopied').style.display = 'none';
+      document.getElementById('mixedCopied').style.display = 'none';
+      document.getElementById('hardCopied').style.display = 'none';
     }
 
     function copyCommand(commandId, msgId) {
